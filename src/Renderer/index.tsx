@@ -2,27 +2,30 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import MaterialSlider, { SliderProps } from "@material-ui/core/Slider";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Button from "@material-ui/core/Button";
 
-import { Canvas, PlusIcon, UIWrapper, UIWrapperContent } from "./UI";
+import { Canvas, CanvasWrapper, PlusIcon, StyledRadio, UIWrapper, UIWrapperContent } from "./UI";
 import Row from "./UI/Row";
-
-import stopPropagationFunc from "../libs/stopPropagation";
 
 import { useRenderer } from "./hooks/useRenderer";
 import useHTMLElementZIndex from "./hooks/useHTMLElementZIndex";
+import { calculateVideoSizes } from "../libs/calculateVideoSizes";
 
 interface RendererInterface {
   video: HTMLVideoElement;
 }
 
-const stopPropagation = stopPropagationFunc();
-
 const Slider = (props: Omit<SliderProps, "onChange"> & { onChange: (value: number) => void }) => (
   <MaterialSlider {...props} onChange={(_, value) => props.onChange(value as number)} />
 );
+
+function stopUiPropagation(target: HTMLElement) {
+  if (!target) return;
+  // target.addEventListener("click", (ev) => {
+  //   ev.stopPropagation();
+  // });
+}
 
 export default React.memo(function ({ video }: RendererInterface) {
   const {
@@ -72,31 +75,32 @@ export default React.memo(function ({ video }: RendererInterface) {
     return () => document.body.removeEventListener("keypress", listener);
   }, [visible]);
 
+  const calculatedCanvasSizes = calculateVideoSizes(size.videoElement, size.video);
+
   return (
     <>
-      <Canvas
-        ref={initCanvas}
+      <CanvasWrapper
         zIndex={zIndex}
         width={size.videoElement.width}
         height={size.videoElement.height}
         translates={translates}
-      />
+      >
+        <Canvas ref={initCanvas} widthProp={calculatedCanvasSizes.width} heightProp={calculatedCanvasSizes.height} />
+      </CanvasWrapper>
       {visible && (
-        <UIWrapper
-          top={size.videoElement.y + size.videoElement.height / 2}
-          /*https://github.com/facebook/react/issues/2043*/
-          onClick={stopPropagation}
-          onDoubleClick={stopPropagation}
-          onMouseDown={stopPropagation}
-          onMouseUp={stopPropagation}
-        >
+        <UIWrapper top={size.videoElement.height / 2}>
           <PlusIcon>+</PlusIcon>
-          <UIWrapperContent>
+          <UIWrapperContent ref={stopUiPropagation}>
             <Typography color="textPrimary" variant="h4" gutterBottom>
               UpScale 4K ({enabled ? "enabled" : "disabled"})
             </Typography>
-            <Row value={scale} name="Scale factor">
-              <Slider value={scale} min={1} max={4} step={0.1} onChange={setScaleElement} />
+            <Row name="Scale factor">
+              <RadioGroup row value={scale} onChange={(_, value) => setScaleElement(parseFloat(value))}>
+                <FormControlLabel value={1} control={<StyledRadio color="primary" />} label="1" />
+                <FormControlLabel value={1.5} control={<StyledRadio color="primary" />} label="1.5" />
+                <FormControlLabel value={2} control={<StyledRadio color="primary" />} label="2" />
+                <FormControlLabel value={3} control={<StyledRadio color="primary" />} label="3" />
+              </RadioGroup>
             </Row>
             <Row value={bold} name="Bold">
               <Slider value={bold} min={0.0001} max={8} step={0.1} onChange={setBoldElement} />
@@ -106,9 +110,9 @@ export default React.memo(function ({ video }: RendererInterface) {
             </Row>
             <Row name="FPS">
               <RadioGroup row value={fps} onChange={(_, value) => setFPS(parseFloat(value))}>
-                <FormControlLabel value={24} control={<Radio color="primary" />} label="24" />
-                <FormControlLabel value={30} control={<Radio color="primary" />} label="30" />
-                <FormControlLabel value={60} control={<Radio color="primary" />} label="60" />
+                <FormControlLabel value={24} control={<StyledRadio color="primary" />} label="24" />
+                <FormControlLabel value={30} control={<StyledRadio color="primary" />} label="30" />
+                <FormControlLabel value={60} control={<StyledRadio color="primary" />} label="60" />
               </RadioGroup>
             </Row>
             <Row>

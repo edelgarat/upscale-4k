@@ -6,8 +6,8 @@ export default ({ children, name, value }: { name?: string; children: JSX.Elemen
   return (
     <Box marginTop="4px">
       {name && (
-        <Box marginBottom="4px">
-          <Typography gutterBottom>{name}</Typography>
+        <Box>
+          <Typography>{name}</Typography>
         </Box>
       )}
       <Box display="flex" alignItems="center">

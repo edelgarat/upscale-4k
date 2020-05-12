@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+import Radio from "@material-ui/core/Radio";
 
-export const Canvas = styled.canvas<{
+export const CanvasWrapper = styled.div<{
   zIndex: number | string;
   width: number;
   height: number;
@@ -13,9 +14,20 @@ export const Canvas = styled.canvas<{
   top: ${(props) => props.translates.top};
   bottom: ${(props) => props.translates.bottom};
   margin: ${(props) => props.translates.margin};
+  z-index: ${(props) => props.zIndex};
   width: ${(props) => props.width}px;
   height: ${(props) => props.height}px;
-  z-index: ${(props) => props.zIndex};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Canvas = styled.canvas<{
+  widthProp: number;
+  heightProp: number;
+}>`
+  width: ${(props) => props.widthProp}px;
+  height: ${(props) => props.heightProp}px;
 `;
 
 export const PlusIcon = styled.p`
@@ -44,12 +56,19 @@ export const UIWrapper = styled(Card)<{ top: number }>`
 
   :hover {
     width: 300px;
-    height: 300px;
+    height: 330px;
     ${PlusIcon} {
       display: none;
     }
     ${UIWrapperContent} {
       display: block;
     }
+  }
+`;
+
+export const StyledRadio = styled(Radio)`
+  svg {
+    width: 24px;
+    height: 24px;
   }
 `;
