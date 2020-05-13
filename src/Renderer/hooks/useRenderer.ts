@@ -1,18 +1,17 @@
 import React from "react";
 
 import { fpsLoop, fpsLoopType } from "../../libs/fpsLoop";
-import { Scaler } from "../../Scaler";
-import { useVideoElementSize } from "./useVideoElementSize";
+import { Scaler } from "../Scaler";
+import { useVideoElementSizes } from "./useVideoElementSizes";
 
 export function useRenderer(video: HTMLVideoElement) {
   const [enabled, setEnabled] = React.useState(false);
-  const [visible, setVisible] = React.useState(false);
   const [canvas, setCanvas] = React.useState<HTMLCanvasElement>();
-  const [scale, setScaleElement] = React.useState(0);
-  const [bold, setBoldElement] = React.useState(0);
-  const [blur, setBlurElement] = React.useState(0);
+  const [scale, setScale] = React.useState(0);
+  const [bold, setBold] = React.useState(0);
+  const [blur, setBlur] = React.useState(0);
   const [fps, setFPS] = React.useState(24);
-  const size = useVideoElementSize(video);
+  const sizes = useVideoElementSizes(video);
 
   const loop = React.useRef<fpsLoopType>();
   React.useEffect(() => {
@@ -37,17 +36,17 @@ export function useRenderer(video: HTMLVideoElement) {
   }
 
   React.useEffect(() => {
-    if (size.videoElement.square === 0) return;
+    if (sizes.videoElement.square === 0) return;
     updateSize();
-  }, [size]);
+  }, [sizes]);
 
   React.useEffect(() => {
     if (!canvas) return;
     instance.current = new Scaler(canvas.getContext("webgl"));
     updateSize();
-    setScaleElement(1);
-    setBoldElement(6);
-    setBlurElement(2);
+    setScale(1);
+    setBold(6);
+    setBlur(2);
   }, [canvas]);
 
   React.useEffect(() => {
@@ -72,18 +71,16 @@ export function useRenderer(video: HTMLVideoElement) {
   return {
     initCanvas: setCanvas,
     canvas,
-    size,
+    sizes,
     scale,
-    setScaleElement,
+    setScale,
     bold,
-    setBoldElement,
+    setBold,
     blur,
-    setBlurElement,
+    setBlur,
     fps,
     setFPS,
     enabled,
     setEnabled,
-    visible,
-    setVisible,
   };
 }

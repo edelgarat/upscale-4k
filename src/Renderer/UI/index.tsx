@@ -1,74 +1,105 @@
-import styled from "styled-components";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Radio from "@material-ui/core/Radio";
+import React from "react";
+import Typography from "@material-ui/core/Typography";
+import MaterialSlider, { SliderProps } from "@material-ui/core/Slider";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import Button from "@material-ui/core/Button";
 
-export const CanvasWrapper = styled.div<{
-  zIndex: number | string;
-  width: number;
-  height: number;
-  translates: { margin: string; top: string; bottom: string };
-}>`
-  position: absolute;
-  left: 0;
-  top: ${(props) => props.translates.top};
-  bottom: ${(props) => props.translates.bottom};
-  margin: ${(props) => props.translates.margin};
-  z-index: ${(props) => props.zIndex};
-  width: ${(props) => props.width}px;
-  height: ${(props) => props.height}px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+import { PlusIcon, StyledRadio, UIWrapper, UIWrapperContent } from "./Components";
+import Row from "./Components/Row";
 
-export const Canvas = styled.canvas<{
-  widthProp: number;
-  heightProp: number;
-}>`
-  width: ${(props) => props.widthProp}px;
-  height: ${(props) => props.heightProp}px;
-`;
+import { FullSizes } from "../../libs/sizes";
 
-export const PlusIcon = styled.p`
-  display: flex;
-  justify-content: center;
-  font-size: 14px !important;
-  line-height: 14px !important;
-  color: #000000 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-`;
+interface UIInterface {
+  sizes: FullSizes;
+  enabled: boolean;
+  scale: number;
+  bold: number;
+  blur: number;
+  fps: number;
+  setEnabled: (value: boolean) => void;
+  setScale: (value: number) => void;
+  setBold: (value: number) => void;
+  setBlur: (value: number) => void;
+  setFPS: (value: number) => void;
+}
 
-export const UIWrapperContent = styled(CardContent)`
-  display: none;
-`;
+function mEvValue(callback: (value: number) => void) {
+  return function (_: any, value: string) {
+    callback(parseFloat(value));
+  };
+}
 
-export const UIWrapper = styled(Card)<{ top: number }>`
-  z-index: 1000000;
-  position: absolute;
-  top: ${(props) => props.top}px;
-  left: 20px;
-  width: 20px;
-  height: 14px;
-  transform: translateY(-50%);
-  transition: all 0.2s !important;
+const Slider = (props: Omit<SliderProps, "onChange"> & { onChange: (value: number) => void }) => (
+  <MaterialSlider {...props} onChange={(_, value) => props.onChange(value as number)} />
+);
 
-  :hover {
-    width: 300px;
-    height: 330px;
-    ${PlusIcon} {
-      display: none;
+export default React.memo(function ({
+  sizes,
+  enabled,
+  scale,
+  bold,
+  blur,
+  fps,
+  setEnabled,
+  setScale,
+  setBold,
+  setBlur,
+  setFPS,
+}: UIInterface) {
+  const [visible, setVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    function listener(ev: KeyboardEvent) {
+      if (ev.code === "KeyU" && ev.ctrlKey) setVisible(!visible);
     }
-    ${UIWrapperContent} {
-      display: block;
-    }
-  }
-`;
 
-export const StyledRadio = styled(Radio)`
-  svg {
-    width: 24px;
-    height: 24px;
-  }
-`;
+    document.body.addEventListener("keypress", listener);
+    return () => document.body.removeEventListener("keypress", listener);
+  }, [visible]);
+
+  if (!visible) return;
+
+  return (
+    <UIWrapper top={sizes.videoElement.height / 2}>
+      <PlusIcon>+</PlusIcon>
+      <UIWrapperContent>
+        <Typography color="textPrimary" variant="h4" gutterBottom>
+          UpScale 4K ({enabled ? "enabled" : "disabled"})
+        </Typography>
+        <Row name="Scale factor">
+          <RadioGroup row value={scale} onChange={mEvValue(setScale)}>
+            <FormControlLabel value={1} control={<StyledRadio color="primary" />} label="1" />
+            <FormControlLabel value={1.5} control={<StyledRadio color="primary" />} label="1.5" />
+            <FormControlLabel value={2} control={<StyledRadio color="primary" />} label="2" />
+            <FormControlLabel value={3} control={<StyledRadio color="primary" />} label="3" />
+          </RadioGroup>
+        </Row>
+        <Row value={bold} name="Bold">
+          <Slider value={bold} min={0.0001} max={8} step={0.1} onChange={setBold} />
+        </Row>
+        <Row value={blur} name="Blur">
+          <Slider value={blur} min={0.0001} max={8} step={0.1} onChange={setBlur} />
+        </Row>
+        <Row name="FPS">
+          <RadioGroup row value={fps} onChange={mEvValue(setFPS)}>
+            <FormControlLabel value={24} control={<StyledRadio color="primary" />} label="24" />
+            <FormControlLabel value={30} control={<StyledRadio color="primary" />} label="30" />
+            <FormControlLabel value={60} control={<StyledRadio color="primary" />} label="60" />
+          </RadioGroup>
+        </Row>
+        <Row>
+          {enabled ? (
+            <Button variant="contained" color="primary" onClick={() => setEnabled(false)}>
+              Disable
+            </Button>
+          ) : (
+            <Button variant="contained" color="primary" onClick={() => setEnabled(true)}>
+              Enable
+            </Button>
+          )}
+        </Row>
+      </UIWrapperContent>
+    </UIWrapper>
+  );
+});
