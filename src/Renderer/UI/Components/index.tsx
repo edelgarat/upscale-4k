@@ -9,7 +9,7 @@ export const UIWrapper = styled(Card)<{ top: number }>`
   left: 20px;
   transform: translateY(-50%);
   width: 300px;
-  height: 330px;
+  height: 338px;
 `;
 
 export const StyledRadio = styled(Radio)`

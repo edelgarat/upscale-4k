@@ -12,10 +12,12 @@ export function runForVideoElement(videoElement: HTMLVideoElement) {
   const videoTarget = makeDiv();
 
   ReactDom.render(
-    <MuiThemeProvider theme={muiTheme}>
-      <Renderer video={videoElement} />
-      <UI />
-    </MuiThemeProvider>,
+    <React.StrictMode>
+      <MuiThemeProvider theme={muiTheme}>
+        <Renderer video={videoElement} />
+        <UI />
+      </MuiThemeProvider>
+    </React.StrictMode>,
     videoTarget,
   );
 
@@ -23,6 +25,6 @@ export function runForVideoElement(videoElement: HTMLVideoElement) {
 
   return () => {
     ReactDom.unmountComponentAtNode(videoTarget);
-    document.body.removeChild(videoTarget);
+    if (videoElement.parentElement) videoElement.parentElement.removeChild(videoTarget);
   };
 }

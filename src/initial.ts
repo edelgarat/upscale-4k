@@ -36,6 +36,7 @@ export function appendElementAfterAnotherElement(target: HTMLElement, after: HTM
 
 export function makeDiv() {
   const div = document.createElement("div");
+  div.className = "upscale-4k target";
   div.style.position = "absolute";
   div.style.top = "0";
   return div;

@@ -11,9 +11,10 @@ export function useRenderer(video: HTMLVideoElement) {
   const sizes = useVideoElementSizes(video);
 
   const loop = React.useRef<fpsLoopType>();
+
   React.useEffect(() => {
-    loop.current = fpsLoop(() => instance.current.render(), 0);
-    return () => loop.current.stop();
+    loop.current = fpsLoop(0);
+    return loop.current.stop;
   }, []);
 
   React.useEffect(() => {
@@ -40,6 +41,7 @@ export function useRenderer(video: HTMLVideoElement) {
   React.useEffect(() => {
     if (!canvas) return;
     instance.current = new Scaler(canvas.getContext("webgl"));
+    loop.current.setFunc(() => instance.current.render());
     updateSize();
     state.setScale(1);
     state.setBold(6);

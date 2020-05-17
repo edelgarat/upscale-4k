@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "upscale video",
   "scripts": {
-    "start:watch": "webpack --watch --mode development",
-    "build": "webpack --mode production --progress"
+    "start:watch": "NODE_ENV=development webpack --watch --progress",
+    "build": "NODE_ENV=production webpack --progress",
+    "postinstall": "node patch-react-dom.js"
   },
   "author": "",
   "license": "ISC",

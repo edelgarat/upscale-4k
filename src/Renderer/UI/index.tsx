@@ -10,6 +10,8 @@ import { observer } from "mobx-react-lite";
 import { StyledRadio, UIWrapper } from "./Components";
 import Row from "./Components/Row";
 
+import stopPropagation from "../../libs/stopPropagation";
+
 import state from "../../state";
 
 function mEvValue(callback: (value: number) => void) {
@@ -32,10 +34,14 @@ function UI() {
     return () => document.body.removeEventListener("keypress", listener);
   }, [state.visible]);
 
+  React.useEffect(() => {
+    state.hide();
+  }, []);
+
   if (!state.visible) return;
 
   return (
-    <UIWrapper top={state.sizes.videoElement.height / 2}>
+    <UIWrapper top={state.sizes.videoElement.height / 2} onClick={stopPropagation()} onDoubleClick={stopPropagation()}>
       <CardContent>
         <Typography color="textPrimary" variant="h4" gutterBottom>
           UpScale 4K ({state.enabled ? "enabled" : "disabled"})

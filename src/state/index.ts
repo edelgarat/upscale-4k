@@ -14,6 +14,10 @@ export class State {
     this.visible = !this.visible;
   };
 
+  @action hide = () => {
+    this.visible = false;
+  };
+
   @action enable = () => {
     this.enabled = true;
   };
