@@ -4,6 +4,11 @@ import { convertNodeListToArray } from "./libs/convertNodeListToArray";
 
 export const muiTheme = createMuiTheme({
   spacing: 1,
+  palette: {
+    primary: {
+      main: "#2B514C",
+    },
+  },
   overrides: {
     MuiSlider: {
       root: {
