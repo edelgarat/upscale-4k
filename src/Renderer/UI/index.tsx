@@ -5,25 +5,12 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Button from "@material-ui/core/Button";
 import CardContent from "@material-ui/core/CardContent";
+import { observer } from "mobx-react-lite";
 
 import { StyledRadio, UIWrapper } from "./Components";
 import Row from "./Components/Row";
 
-import { FullSizes } from "../../libs/sizes";
-
-interface UIInterface {
-  sizes: FullSizes;
-  enabled: boolean;
-  scale: number;
-  bold: number;
-  blur: number;
-  fps: number;
-  setEnabled: (value: boolean) => void;
-  setScale: (value: number) => void;
-  setBold: (value: number) => void;
-  setBlur: (value: number) => void;
-  setFPS: (value: number) => void;
-}
+import state from "../../state";
 
 function mEvValue(callback: (value: number) => void) {
   return function (_: any, value: string) {
@@ -35,66 +22,52 @@ const Slider = (props: Omit<SliderProps, "onChange"> & { onChange: (value: numbe
   <MaterialSlider {...props} onChange={(_, value) => props.onChange(value as number)} />
 );
 
-export default React.memo(function ({
-  sizes,
-  enabled,
-  scale,
-  bold,
-  blur,
-  fps,
-  setEnabled,
-  setScale,
-  setBold,
-  setBlur,
-  setFPS,
-}: UIInterface) {
-  const [visible, setVisible] = React.useState(false);
-
+function UI() {
   React.useEffect(() => {
     function listener(ev: KeyboardEvent) {
-      if (ev.code === "KeyU" && ev.ctrlKey) setVisible(!visible);
+      if (ev.code === "KeyU" && ev.ctrlKey) state.toggleVisibility();
     }
 
     document.body.addEventListener("keypress", listener);
     return () => document.body.removeEventListener("keypress", listener);
-  }, [visible]);
+  }, [state.visible]);
 
-  if (!visible) return;
+  if (!state.visible) return;
 
   return (
-    <UIWrapper top={sizes.videoElement.height / 2}>
+    <UIWrapper top={state.sizes.videoElement.height / 2}>
       <CardContent>
         <Typography color="textPrimary" variant="h4" gutterBottom>
-          UpScale 4K ({enabled ? "enabled" : "disabled"})
+          UpScale 4K ({state.enabled ? "enabled" : "disabled"})
         </Typography>
         <Row name="Scale factor">
-          <RadioGroup row value={scale} onChange={mEvValue(setScale)}>
+          <RadioGroup row value={state.scale} onChange={mEvValue(state.setScale)}>
             <FormControlLabel value={1} control={<StyledRadio color="primary" />} label="1" />
             <FormControlLabel value={1.5} control={<StyledRadio color="primary" />} label="1.5" />
             <FormControlLabel value={2} control={<StyledRadio color="primary" />} label="2" />
             <FormControlLabel value={3} control={<StyledRadio color="primary" />} label="3" />
           </RadioGroup>
         </Row>
-        <Row value={bold} name="Bold">
-          <Slider value={bold} min={0.0001} max={8} step={0.1} onChange={setBold} />
+        <Row value={state.bold} name="Bold">
+          <Slider value={state.bold} min={0.0001} max={8} step={0.1} onChange={state.setBold} />
         </Row>
-        <Row value={blur} name="Blur">
-          <Slider value={blur} min={0.0001} max={8} step={0.1} onChange={setBlur} />
+        <Row value={state.blur} name="Blur">
+          <Slider value={state.blur} min={0.0001} max={8} step={0.1} onChange={state.setBlur} />
         </Row>
         <Row name="FPS">
-          <RadioGroup row value={fps} onChange={mEvValue(setFPS)}>
+          <RadioGroup row value={state.fps} onChange={mEvValue(state.setFPS)}>
             <FormControlLabel value={24} control={<StyledRadio color="primary" />} label="24" />
             <FormControlLabel value={30} control={<StyledRadio color="primary" />} label="30" />
             <FormControlLabel value={60} control={<StyledRadio color="primary" />} label="60" />
           </RadioGroup>
         </Row>
         <Row>
-          {enabled ? (
-            <Button variant="contained" color="primary" onClick={() => setEnabled(false)}>
+          {state.enabled ? (
+            <Button variant="contained" color="primary" onClick={state.disable}>
               Disable
             </Button>
           ) : (
-            <Button variant="contained" color="primary" onClick={() => setEnabled(true)}>
+            <Button variant="contained" color="primary" onClick={state.enable}>
               Enable
             </Button>
           )}
@@ -102,4 +75,5 @@ export default React.memo(function ({
       </CardContent>
     </UIWrapper>
   );
-});
+}
+export default React.memo(observer(UI));

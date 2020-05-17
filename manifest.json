@@ -13,7 +13,7 @@
   "content_scripts": [
     {
       "all_frames": true,
-      "matches": ["http://*/*", "https://*/*"],
+      "matches": ["http://*/*", "https://*/*", "file:///*"],
       "match_about_blank": true,
       "js": ["bundle.js"]
     }

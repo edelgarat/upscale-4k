@@ -4,13 +4,10 @@ import { fpsLoop, fpsLoopType } from "../../libs/fpsLoop";
 import { Scaler } from "../Scaler";
 import { useVideoElementSizes } from "./useVideoElementSizes";
 
+import state from "../../state";
+
 export function useRenderer(video: HTMLVideoElement) {
-  const [enabled, setEnabled] = React.useState(false);
   const [canvas, setCanvas] = React.useState<HTMLCanvasElement>();
-  const [scale, setScale] = React.useState(0);
-  const [bold, setBold] = React.useState(0);
-  const [blur, setBlur] = React.useState(0);
-  const [fps, setFPS] = React.useState(24);
   const sizes = useVideoElementSizes(video);
 
   const loop = React.useRef<fpsLoopType>();
@@ -20,19 +17,19 @@ export function useRenderer(video: HTMLVideoElement) {
   }, []);
 
   React.useEffect(() => {
-    if (enabled) {
+    if (state.enabled) {
       loop.current.start();
       return;
     }
     loop.current.stop();
-  }, [enabled]);
+  }, [state.enabled]);
 
   const instance = React.useRef<Scaler>();
 
   function updateSize() {
     if (!instance.current) return;
     instance.current.inputVideo(video);
-    instance.current.resize(scale);
+    instance.current.resize(state.scale);
   }
 
   React.useEffect(() => {
@@ -44,43 +41,33 @@ export function useRenderer(video: HTMLVideoElement) {
     if (!canvas) return;
     instance.current = new Scaler(canvas.getContext("webgl"));
     updateSize();
-    setScale(1);
-    setBold(6);
-    setBlur(2);
+    state.setScale(1);
+    state.setBold(6);
+    state.setBlur(2);
   }, [canvas]);
 
   React.useEffect(() => {
-    loop.current.setFPS(fps);
-  }, [fps]);
+    loop.current.setFPS(state.fps);
+  }, [state.fps]);
 
   React.useEffect(() => {
     if (!instance.current) return;
-    instance.current.resize(scale);
-  }, [scale]);
+    instance.current.resize(state.scale);
+  }, [state.scale]);
 
   React.useEffect(() => {
     if (!instance.current) return;
-    instance.current.bold = bold;
-  }, [bold]);
+    instance.current.bold = state.bold;
+  }, [state.bold]);
 
   React.useEffect(() => {
     if (!instance.current) return;
-    instance.current.blur = blur;
-  }, [blur]);
+    instance.current.blur = state.blur;
+  }, [state.blur]);
 
   return {
     initCanvas: setCanvas,
     canvas,
     sizes,
-    scale,
-    setScale,
-    bold,
-    setBold,
-    blur,
-    setBlur,
-    fps,
-    setFPS,
-    enabled,
-    setEnabled,
   };
 }

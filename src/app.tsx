@@ -1,25 +1,28 @@
 import React from "react";
 import ReactDom from "react-dom";
 import { MuiThemeProvider } from "@material-ui/core/styles";
+import "mobx-react-lite/batchingForReactDom";
 
 import Renderer from "./Renderer";
+import UI from "./Renderer/UI";
 
 import { appendElementAfterAnotherElement, makeDiv, muiTheme } from "./initial";
 
 export function runForVideoElement(videoElement: HTMLVideoElement) {
-  const target = makeDiv();
+  const videoTarget = makeDiv();
 
   ReactDom.render(
     <MuiThemeProvider theme={muiTheme}>
       <Renderer video={videoElement} />
+      <UI />
     </MuiThemeProvider>,
-    target,
+    videoTarget,
   );
 
-  appendElementAfterAnotherElement(target, videoElement);
+  appendElementAfterAnotherElement(videoTarget, videoElement);
 
   return () => {
-    ReactDom.unmountComponentAtNode(target);
-    document.body.removeChild(target);
+    ReactDom.unmountComponentAtNode(videoTarget);
+    document.body.removeChild(videoTarget);
   };
 }
