@@ -1,9 +1,9 @@
 {
-  "name": "upscale-4k",
+  "name": "Upscale 4k",
   "short_name": "upscale-4k",
   "version": "0.1.0",
   "manifest_version": 2,
-  "description": "Upscale HTML5 video",
+  "description": "Upscale HTML5 video on any sites to 4k",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",

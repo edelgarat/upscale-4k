@@ -5,9 +5,10 @@
   "scripts": {
     "start:watch": "NODE_ENV=development webpack --watch --progress",
     "build": "NODE_ENV=production webpack --progress",
+    "build-store-archive": "npm run build && zip -r build.zip dist/icons dist/bundle.js dist/manifest.json",
     "postinstall": "node patch-react-dom.js"
   },
-  "author": "",
+  "author": "Anatoly Grabarov",
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "4.9.13",
