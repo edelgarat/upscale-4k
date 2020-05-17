@@ -4,8 +4,9 @@ import MaterialSlider, { SliderProps } from "@material-ui/core/Slider";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Button from "@material-ui/core/Button";
+import CardContent from "@material-ui/core/CardContent";
 
-import { PlusIcon, StyledRadio, UIWrapper, UIWrapperContent } from "./Components";
+import { StyledRadio, UIWrapper } from "./Components";
 import Row from "./Components/Row";
 
 import { FullSizes } from "../../libs/sizes";
@@ -62,8 +63,7 @@ export default React.memo(function ({
 
   return (
     <UIWrapper top={sizes.videoElement.height / 2}>
-      <PlusIcon>+</PlusIcon>
-      <UIWrapperContent>
+      <CardContent>
         <Typography color="textPrimary" variant="h4" gutterBottom>
           UpScale 4K ({enabled ? "enabled" : "disabled"})
         </Typography>
@@ -99,7 +99,7 @@ export default React.memo(function ({
             </Button>
           )}
         </Row>
-      </UIWrapperContent>
+      </CardContent>
     </UIWrapper>
   );
 });
