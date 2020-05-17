@@ -32,7 +32,7 @@ function runCleaner() {
 }
 
 function initialize() {
-  console.log("initialize upscale 4k");
+  console.log("initialize upscale 4k for frame");
   runSearch();
 
   setInterval(() => {
