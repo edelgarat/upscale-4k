@@ -20,12 +20,10 @@ export function fpsLoop(initialFPS: number) {
       func = newFunc;
     },
     start: () => {
-      console.log("fps loop start");
       started = true;
       loopFunction();
     },
     stop: () => {
-      console.log("fps loop stop");
       started = false;
     },
     setFPS: (newFPS: number) => {

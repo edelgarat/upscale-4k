@@ -9,6 +9,7 @@ export class State {
   @observable blur = 0;
   @observable fps = 24;
   @observable sizes = initialFullSizes;
+  @observable error: string | undefined;
 
   @action toggleVisibility = () => {
     this.visible = !this.visible;
@@ -44,6 +45,14 @@ export class State {
 
   @action setSizes = (sizes: FullSizes) => {
     this.sizes = sizes;
+  };
+
+  @action setError = (error: string) => {
+    this.error = error;
+  };
+
+  @action clearError = () => {
+    this.error = undefined;
   };
 }
 

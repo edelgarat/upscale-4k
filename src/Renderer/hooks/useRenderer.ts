@@ -19,7 +19,16 @@ export function useRenderer(video: HTMLVideoElement) {
 
   React.useEffect(() => {
     if (state.enabled) {
-      loop.current.start();
+      state.clearError();
+      try {
+        loop.current.start();
+      } catch (e) {
+        if (e instanceof DOMException && e.message.includes("cross-origin")) {
+          state.setError("Sorry, but your browser blocks cross-origin video source. Try a different player");
+          loop.current.stop();
+          state.disable();
+        }
+      }
       return;
     }
     loop.current.stop();

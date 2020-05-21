@@ -7,6 +7,8 @@ import { useRenderer } from "./hooks/useRenderer";
 import useHTMLElementZIndex from "./hooks/useHTMLElementZIndex";
 import { calculateVideoSizes } from "../libs/sizes";
 
+import UI from "./UI";
+
 import state from "../state";
 
 interface RendererInterface {
@@ -37,14 +39,20 @@ function Renderer({ video }: RendererInterface) {
   const calculatedCanvasSizes = calculateVideoSizes(sizes.videoElement, sizes.video);
 
   return (
-    <CanvasWrapper
-      zIndex={zIndex}
-      width={sizes.videoElement.width}
-      height={sizes.videoElement.height}
-      translates={translates}
-    >
-      <Canvas ref={initCanvas} widthProp={calculatedCanvasSizes.width} heightProp={calculatedCanvasSizes.height} />
-    </CanvasWrapper>
+    <>
+      <CanvasWrapper
+        zIndex={zIndex}
+        size={
+          state.enabled
+            ? { width: sizes.videoElement.width, height: sizes.videoElement.height }
+            : { width: 0, height: 0 }
+        }
+        translates={translates}
+      >
+        <Canvas ref={initCanvas} widthProp={calculatedCanvasSizes.width} heightProp={calculatedCanvasSizes.height} />
+      </CanvasWrapper>
+      <UI />
+    </>
   );
 }
 

@@ -12,15 +12,16 @@
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "4.9.13",
+    "@material-ui/lab": "^4.0.0-alpha.53",
+    "mobx": "5.15.4",
+    "mobx-react-lite": "2.0.7",
     "ramda": "0.27.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "styled-components": "5.1.0",
     "ts-loader": "7.0.2",
     "typescript": "3.8.3",
-    "webpack": "4.43.0",
-    "mobx": "5.15.4",
-    "mobx-react-lite": "2.0.7"
+    "webpack": "4.43.0"
   },
   "devDependencies": {
     "@types/ramda": "0.27.4",

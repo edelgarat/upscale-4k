@@ -6,6 +6,8 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import Button from "@material-ui/core/Button";
 import CardContent from "@material-ui/core/CardContent";
 import { observer } from "mobx-react-lite";
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 
 import { StyledRadio, UIWrapper } from "./Components";
 import Row from "./Components/Row";
@@ -41,45 +43,61 @@ function UI() {
   if (!state.visible) return;
 
   return (
-    <UIWrapper top={state.sizes.videoElement.height / 2} onClick={stopPropagation()} onDoubleClick={stopPropagation()}>
-      <CardContent>
-        <Typography color="textPrimary" variant="h4" gutterBottom>
-          UpScale 4K ({state.enabled ? "enabled" : "disabled"})
-        </Typography>
-        <Row name="Scale factor">
-          <RadioGroup row value={state.scale} onChange={mEvValue(state.setScale)}>
-            <FormControlLabel value={1} control={<StyledRadio color="primary" />} label="1" />
-            <FormControlLabel value={1.5} control={<StyledRadio color="primary" />} label="1.5" />
-            <FormControlLabel value={2} control={<StyledRadio color="primary" />} label="2" />
-            <FormControlLabel value={3} control={<StyledRadio color="primary" />} label="3" />
-          </RadioGroup>
-        </Row>
-        <Row value={state.bold} name="Bold">
-          <Slider value={state.bold} min={0.0001} max={8} step={0.1} onChange={state.setBold} />
-        </Row>
-        <Row value={state.blur} name="Blur">
-          <Slider value={state.blur} min={0.0001} max={8} step={0.1} onChange={state.setBlur} />
-        </Row>
-        <Row name="FPS">
-          <RadioGroup row value={state.fps} onChange={mEvValue(state.setFPS)}>
-            <FormControlLabel value={24} control={<StyledRadio color="primary" />} label="24" />
-            <FormControlLabel value={30} control={<StyledRadio color="primary" />} label="30" />
-            <FormControlLabel value={60} control={<StyledRadio color="primary" />} label="60" />
-          </RadioGroup>
-        </Row>
-        <Row>
-          {state.enabled ? (
-            <Button variant="contained" color="primary" onClick={state.disable}>
-              Disable
-            </Button>
-          ) : (
-            <Button variant="contained" color="primary" onClick={state.enable}>
-              Enable
-            </Button>
-          )}
-        </Row>
-      </CardContent>
-    </UIWrapper>
+    <>
+      <UIWrapper
+        top={state.sizes.videoElement.height / 2}
+        onClick={stopPropagation()}
+        onDoubleClick={stopPropagation()}
+      >
+        <CardContent>
+          <Typography color="textPrimary" variant="h4" gutterBottom>
+            UpScale 4K ({state.enabled ? "enabled" : "disabled"})
+          </Typography>
+          <Row name="Scale factor">
+            <RadioGroup row value={state.scale} onChange={mEvValue(state.setScale)}>
+              <FormControlLabel value={1} control={<StyledRadio color="primary" />} label="1" />
+              <FormControlLabel value={1.5} control={<StyledRadio color="primary" />} label="1.5" />
+              <FormControlLabel value={2} control={<StyledRadio color="primary" />} label="2" />
+              <FormControlLabel value={3} control={<StyledRadio color="primary" />} label="3" />
+            </RadioGroup>
+          </Row>
+          <Row value={state.bold} name="Bold">
+            <Slider value={state.bold} min={0.0001} max={8} step={0.1} onChange={state.setBold} />
+          </Row>
+          <Row value={state.blur} name="Blur">
+            <Slider value={state.blur} min={0.0001} max={8} step={0.1} onChange={state.setBlur} />
+          </Row>
+          <Row name="FPS">
+            <RadioGroup row value={state.fps} onChange={mEvValue(state.setFPS)}>
+              <FormControlLabel value={24} control={<StyledRadio color="primary" />} label="24" />
+              <FormControlLabel value={30} control={<StyledRadio color="primary" />} label="30" />
+              <FormControlLabel value={60} control={<StyledRadio color="primary" />} label="60" />
+            </RadioGroup>
+          </Row>
+          <Row>
+            {state.enabled ? (
+              <Button variant="contained" color="primary" onClick={state.disable}>
+                Disable
+              </Button>
+            ) : (
+              <Button variant="contained" color="primary" onClick={state.enable}>
+                Enable
+              </Button>
+            )}
+          </Row>
+        </CardContent>
+      </UIWrapper>
+      <Snackbar
+        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+        open={!!state.error}
+        autoHideDuration={12000}
+        onClose={state.clearError}
+      >
+        <Alert elevation={6} variant="filled" onClose={state.clearError} severity="error">
+          {state.error}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
 export default React.memo(observer(UI));

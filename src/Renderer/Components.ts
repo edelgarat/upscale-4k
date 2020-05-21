@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const CanvasWrapper = styled.div<{
   zIndex: number | string;
-  width: number;
-  height: number;
+  size: { width: number; height: number };
+
   translates: { margin: string; top: string; bottom: string };
 }>`
   position: absolute;
@@ -12,8 +12,8 @@ export const CanvasWrapper = styled.div<{
   bottom: ${(props) => props.translates.bottom};
   margin: ${(props) => props.translates.margin};
   z-index: ${(props) => props.zIndex};
-  width: ${(props) => props.width}px;
-  height: ${(props) => props.height}px;
+  width: ${(props) => props.size.width}px;
+  height: ${(props) => props.size.height}px;
   display: flex;
   align-items: center;
   justify-content: center;
